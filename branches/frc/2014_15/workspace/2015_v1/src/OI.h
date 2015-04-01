@@ -42,7 +42,23 @@ public:
 	bool xbox1_startTapped();
 	bool xbox1_lClickTapped();
 	bool xbox1_rClickTapped();
-
+	int xbox1_POV();
+	bool xbox1_POVN();
+	bool xbox1_POVNE();
+	bool xbox1_POVE();
+	bool xbox1_POVSE();
+	bool xbox1_POVS();
+	bool xbox1_POVSW();
+	bool xbox1_POVW();
+	bool xbox1_POVNW();
+	bool xbox1_POVNTapped();
+	bool xbox1_POVNETapped();
+	bool xbox1_POVETapped();
+	bool xbox1_POVSETapped();
+	bool xbox1_POVSTapped();
+	bool xbox1_POVSWTapped();
+	bool xbox1_POVWTapped();
+	bool xbox1_POVNWTapped();
 
 	float xbox2_y1();
 	float xbox2_y2();
@@ -74,6 +90,23 @@ public:
 	bool xbox2_startTapped();
 	bool xbox2_lClickTapped();
 	bool xbox2_rClickTapped();
+	int xbox2_POV();
+	bool xbox2_POVN();
+	bool xbox2_POVNE();
+	bool xbox2_POVE();
+	bool xbox2_POVSE();
+	bool xbox2_POVS();
+	bool xbox2_POVSW();
+	bool xbox2_POVW();
+	bool xbox2_POVNW();
+	bool xbox2_POVNTapped();
+	bool xbox2_POVNETapped();
+	bool xbox2_POVETapped();
+	bool xbox2_POVSETapped();
+	bool xbox2_POVSTapped();
+	bool xbox2_POVSWTapped();
+	bool xbox2_POVWTapped();
+	bool xbox2_POVNWTapped();
 
 	bool board_1();
 	bool board_2();
@@ -104,7 +137,9 @@ public:
 
 private:
 	bool tappedArrayXbox1[12]{false,false,false,false,false,false,false,false,false,false,false,false};
+	bool tappedArrayXbox1POV[8]{false,false,false,false,false,false,false,false};
 	bool tappedArrayXbox2[12]{false,false,false,false,false,false,false,false,false,false,false,false};
+	bool tappedArrayXbox2POV[8]{false,false,false,false,false,false,false,false};
 	bool tappedArrayBoard[12]{false,false,false,false,false,false,false,false,false,false,false,false};
 	bool hiLoSwitchUnTapped;
 };

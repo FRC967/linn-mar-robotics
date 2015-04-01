@@ -7,13 +7,16 @@ i(0)
 	limitClicked=false;
 	Requires(drive);
 	Requires(elevator);
+	Requires(antennae);
 	currentElevatorState=ELEVATOR_NORMAL;
 	currentDriveState=DRIVE_NORMAL;
+	currentAntennaeState=ANTENNAE_NORMAL;
 	targetElevatorHeight=0;
 	elevatorStep=1;
 	driveStep=1;
 	elevatorTimer=std::clock();
 	driveTimer=std::clock();
+	antennaeTimer=std::clock();
 	targetAngle=0.0;
 	targetDistance=0.0;
 	initialAngle=0.0;
@@ -99,7 +102,23 @@ void commandWithAutomation::runCurrentLoop(){
 		}
 	}
 
-	if (elevatorLimit->Get()==0){
+	if (currentAntennaeState == ANTENNAE_NORMAL){
+		normalAntennaeOperationLoop();
+	}
+	else if (currentAntennaeState == RAISE_ANTENNAE){
+		if (raiseAntennaeLoop()){
+			normalAntennaeOperation();
+			currentAntennaeState=ANTENNAE_NORMAL;
+		}
+	}
+	else if (currentAntennaeState == LOWER_ANTENNAE){
+		if (lowerAntennaeLoop()){
+			normalAntennaeOperation();
+			currentAntennaeState=ANTENNAE_NORMAL;
+		}
+	}
+
+	if (elevatorLimit->Get()==0 && !oi->board_hiLoSwitch()){
 		if (!limitClicked){
 			elevatorEncoder->Reset();
 			limitClicked=true;
@@ -271,6 +290,18 @@ void commandWithAutomation::advancedMove(double L, double R, double distance){
 	drive->Move(L,R);
 	currentDriveState=ADVANCED_MOVE;
 	driveStep=1;
+}
+
+void commandWithAutomation::raiseAntennae(){
+	antennae->set(-1);
+	currentAntennaeState=RAISE_ANTENNAE;
+	antennaeTimer=std::clock();
+}
+
+void commandWithAutomation::lowerAntennae(){
+	antennaeTimer=std::clock();
+	antennae->set(1);
+	currentAntennaeState=LOWER_ANTENNAE;
 }
 
 bool commandWithAutomation::moveElevatorToHeightLoop(){
@@ -593,9 +624,26 @@ bool commandWithAutomation::advancedMoveLoop(){
 
 bool commandWithAutomation::advancedTurnLoop(){
 	if (targetAngle>0){
-		return ((targetAngle-(nav6->GetYaw()-initialAngle))<5);
+		return ((nav6->GetYaw()-initialAngle)>(targetAngle-5));
 	}
 	else {
-		return ((targetAngle-(nav6->GetYaw()-initialAngle))>-5);
+		return ((nav6->GetYaw()-initialAngle)<(targetAngle+5));
 	}
+}
+
+bool commandWithAutomation::lowerAntennaeLoop(){
+	antennae->set(1);
+	if ((3.0*(double)(std::clock() - antennaeTimer) / (double) CLOCKS_PER_SEC)>antennaeTime){
+		antennae->stop();
+		return true;
+	}
+	return false;
+}
+bool commandWithAutomation::raiseAntennaeLoop(){
+	antennae->set(-1);
+	if ((3.0*(double)(std::clock() - antennaeTimer) / (double) CLOCKS_PER_SEC)>antennaeTime){
+		antennae->stop();
+		return true;
+	}
+	return false;
 }

@@ -18,17 +18,19 @@ telControl::telControl()
 	targetDistance=0.0;
 	initialAngle=0.0;
 	initialDistance=0.0;
+
 	elevatorOverride=false;
+
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(chassis);
 }
 
 // Called just before this Command runs the first time
 void telControl::Initialize() {
+//	elevator->closeMag();
 	elevator->openMag();
 	elevator->openArms();
-	drivePID.enable();
-	drivePID.setTarget(0);
+	drive->lowGear();
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -85,9 +87,9 @@ void telControl::Execute() {
 			}
 		}
 	}
-	dash->PutNumber("PID", drivePID.get());
-	dash->PutNumber("PID IsEnabled", drivePID.isEnabled());
-	dash->PutNumber("PID target", drivePID.getTarget());
+	if (oi->xbox1_yTapped()){
+		nav6->ZeroYaw();
+	}
 
 
 	//||   or
@@ -131,19 +133,6 @@ void telControl::normalDriveOperationLoop(){
 	}
 	if (oi->xbox1_lB()){
 		drive->stopdrive();
-	}
-	if (oi->xbox1_yTapped()){
-		goToLocation(45,48);
-	}
-	//a button flips between normal drive and controlled acceleration
-	//MoveNormal = normal drive and MoveCurve = limited acceleration
-	if (oi->xbox1_aTapped()){
-		if (drive->getAccel()>=.5){
-			drive->setAccel(.02);
-		}
-		else {
-			drive->setAccel(2);
-		}
 	}
 }
 
@@ -189,24 +178,24 @@ void telControl::normalElevatorOperationLoop(){
 	if (oi->board_up() && (elevatorEncoder->GetDistance()<46.5 || elevatorOverride)) {
 		elevator->setElevator(1);
 	}
-	else if (oi->board_down() && (elevatorEncoder->GetDistance()>0 || elevatorOverride) && elevatorLimit->Get()==1) {
+	else if (oi->board_down() && (elevatorEncoder->GetDistance()>0 || elevatorOverride) && (elevatorLimit->Get()==1 || oi->board_hiLoSwitch())) {
 		elevator->setElevator(-.8);
 	}
 	else if (oi->xbox2_lB() && (elevatorEncoder->GetDistance()<46.5 || elevatorOverride)) {
 		elevator->setElevator(1);
 	}
-	else if (oi->xbox2_rB() && (elevatorEncoder->GetDistance()>0 || elevatorOverride) && elevatorLimit->Get()==1) {
+	else if (oi->xbox2_rB() && (elevatorEncoder->GetDistance()>0 || elevatorOverride) && (elevatorLimit->Get()==1 || oi->board_hiLoSwitch())) {
 		elevator->setElevator(-.8);
 	}
 	else {
 		elevator->setElevator(0);
 	}
-	if (oi->board_hiLoSwitchTapped()){
-		elevator->highGearElevator();
-	}
-	if (oi->board_hiLoSwitchUnTapped()){
-		elevator->lowGearElevator();
-	}
+//	if (oi->board_hiLoSwitchTapped()){
+//		elevator->highGearElevator();
+//	}
+//	if (oi->board_hiLoSwitchUnTapped()){
+//		elevator->lowGearElevator();
+//	}
 	if (oi->xbox2_aTapped()) {
 		elevator->shiftElevatorGear();
 	}
@@ -232,6 +221,23 @@ void telControl::normalElevatorOperationLoop(){
 		moveElevatorToHeight(toteLv3Height);
 	}
 	if (oi->board_4Tapped()){
-		moveElevatorToHeight(toteMaxHeight);
+		elevator->shiftElevatorGear();
+	//	moveElevatorToHeight(toteMaxHeight);
+	}
+}
+
+void telControl::normalAntennaeOperation(){
+	currentAntennaeState=ANTENNAE_NORMAL;
+}
+
+void telControl::normalAntennaeOperationLoop(){
+	if (oi->xbox1_POVN()){
+		antennae->set(-1);
+	}
+	else if (oi->xbox1_POVS()){
+		antennae->set(1);
+	}
+	else {
+		antennae->stop();
 	}
 }

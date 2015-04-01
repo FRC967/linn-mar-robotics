@@ -3,20 +3,32 @@
 autonomousCommand::autonomousCommand()
 {
 	switch (CommandBase::prefs->GetInt("Autonomous",1)){
+	case 0:
+		CommandBase::dash->PutString ("Autonomous", "Nothing");
+		AddSequential(new autonNothing());
+		break;
 	case 1:
-		CommandBase::dash->PutNumber ("Autonomous Value", 1);
+		CommandBase::dash->PutString ("Autonomous", "1 Tote");
 		AddSequential(new auton1T());
 		break;
 	case 2:
-		CommandBase::dash->PutNumber ("Autonomous Value", 2);
+		CommandBase::dash->PutString ("Autonomous", "2 Tote");
 		AddSequential(new auton2T());
 		break;
 	case 3:
-		CommandBase::dash->PutNumber ("Autonomous Value", 3);
+		CommandBase::dash->PutString ("Autonomous", "3 Tote");
 		AddSequential(new auton3T());
 		break;
+	case 10:
+		CommandBase::dash->PutString ("Autonomous", "Auton Step");
+		AddSequential(new autonStep());
+		break;
+	case 100:
+		CommandBase::dash->PutString ("Autonomous", "Test");
+		AddSequential(new autonTest());
+		break;
 	default:
-		CommandBase::dash->PutNumber ("Autonomous Value", 4);
+		CommandBase::dash->PutString ("Autonomous", "Drive into Zone");
 		AddSequential(new autonDriveIntoZone());
 		break;
 	}
