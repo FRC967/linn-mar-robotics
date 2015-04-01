@@ -19,10 +19,12 @@ public:
 
 	void normalElevatorOperation();
 	void normalDriveOperation();
+	void normalAntennaeOperation();
 
 protected:
 	void normalElevatorOperationLoop();
 	void normalDriveOperationLoop();
+	void normalAntennaeOperationLoop();
 
 private:
 	const float conveyorSpeed=.75;

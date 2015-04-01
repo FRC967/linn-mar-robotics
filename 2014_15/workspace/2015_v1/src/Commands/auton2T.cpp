@@ -1,5 +1,5 @@
 #include "auton2T.h"
-auton2T::auton2T(): phase(1), turnRight(false), i(0)
+auton2T::auton2T(): phase(1), turnRight(true), i(0)
 {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(chassis);
@@ -13,6 +13,7 @@ void auton2T::Initialize()
 	phase=1;
 	currentElevatorState=ELEVATOR_NORMAL;
 	currentDriveState=DRIVE_NORMAL;
+	currentAntennaeState=ANTENNAE_NORMAL;
 	turnRight=true;
 }
 
@@ -25,7 +26,7 @@ void auton2T::Execute()
 // Make this return true when this Command no longer needs to run execute()
 bool auton2T::IsFinished()
 {
-	return phase==12;
+	return phase==17;
 }
 
 // Called once after isFinished returns true
@@ -56,32 +57,45 @@ void auton2T::normalElevatorOperation(){
 void auton2T::normalElevatorOperationLoop(){
 	switch (phase){
 	case 1:
-		autoGetTote();
+		elevator->closeMag();
+		phase++;
 		break;
 	case 2:
-		elevator->closeArms();
-		moveElevatorToHeight(35);
+		moveElevatorToHeight(13);
 		break;
 	case 3:
-		elevator->setRRollers(1);
-		elevator->setLRollers(1);
-		break;
-	case 4:
-		elevator->setRRollers(1);
-		elevator->setLRollers(1);
+		moveElevatorToHeight(26);
 		break;
 	case 5:
-		elevator->setRollers(-1);
-		if (!elevator->isArmsOpen()){
-			elevator->openArms();
-		}
+		autoGrabTote();
 		break;
 	case 6:
-		autoGetTote();
+		elevator->openArms();
+		moveElevatorToHeight(toteLowestHeight);
 		break;
-	case 9:
+	case 8:
+		moveElevatorToHeight(toteHoldHeight);
+		break;
+	case 10:
+		elevator->setRollers(-1);
+		i=0;
+		break;
+	case 11:
+		i++;
+		if (i>30){
+			elevator->closeArms();
+			elevator->lowGearElevator();
+			if (i>45){
+				phase++;
+			}
+		}
+		break;
+	case 15:
+		elevator->setRollers(0);
 		autoEjectTote();
 		break;
+	default:
+		elevator->setElevator(0);
 	}
 }
 
@@ -92,37 +106,62 @@ void auton2T::normalDriveOperation(){
 }
 void auton2T::normalDriveOperationLoop(){
 	switch (phase){
-	case 1:
-		drive->stopdrive();
-		break;
 	case 3:
-		fastGoToLocation(-15,43);
-		break;
-	case 4:
-		fastGoToLocation(25,15);
-		break;
-	case 5:
-		fastGoToLocation(-15,25);
-		break;
-	case 6:
-		drive->stopdrive();
+		goToLocation(0,24);
 		break;
 	case 7:
-		if (turnRight){
-			goToLocation(90,100); 	//Supposed to be (90,108)
-		}
-		else {
-			goToLocation(-90,100);	//Supposed to be (-90,108)
-		}
+		nav6->ZeroYaw();
+		phase++;
 		break;
 	case 8:
-		goToLocation(70,0);
+		if (nav6->GetYaw()<130 && nav6->GetYaw()>-60){
+			drive->Move(.55,-.45);
+		}
+		else {
+			phase=10;
+			drive->stopdrive();
+		}
 		break;
 	case 9:
-		drive->stopdrive();
+		if (nav6->GetYaw()<130 && nav6->GetYaw()>-60){
+			drive->Move(.55,-.45);
+		}
+		else {
+			phase=10;
+			drive->stopdrive();
+		}
 		break;
 	case 10:
+		advancedMove(.8,.8,47);
+		break;
+	case 12:
+		advancedMove(-.3,-.3,-7);
+		break;
+	case 13:
+		if (turnRight){
+			goToLocation(90,105); 	//Supposed to be (90,108)
+		}
+		else {
+			goToLocation(-90,105);	//Supposed to be (-90,108)
+		}
+		break;
+	case 14:
+		goToLocation(70,0);
+		break;
+	case 16:
 		fastGoToLocation(0,-12);
 		break;
+	default :
+		drive->stopdrive();
+		break;
 	}
+}
+
+void auton2T::normalAntennaeOperation(){
+	phase++;
+	currentAntennaeState=ANTENNAE_NORMAL;
+}
+
+void auton2T::normalAntennaeOperationLoop(){
+	antennae->stop();
 }

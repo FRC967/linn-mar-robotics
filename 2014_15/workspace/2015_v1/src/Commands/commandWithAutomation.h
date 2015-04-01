@@ -31,6 +31,12 @@ public:
 		ADVANCED_TURN
 	};
 
+	enum antennaeState{
+		ANTENNAE_NORMAL,
+		LOWER_ANTENNAE,
+		RAISE_ANTENNAE
+	};
+
 	commandWithAutomation();
 	virtual void Initialize()=0;
 	virtual void Execute()=0;
@@ -40,6 +46,7 @@ public:
 
 	virtual void normalElevatorOperation()=0;
 	virtual void normalDriveOperation()=0;
+	virtual void normalAntennaeOperation()=0;
 	void moveElevatorToHeight(float heightIN);
 	void resetElevator();
 	void autoLoadTote();
@@ -51,6 +58,8 @@ public:
 	void fastGoToLocation(double angle, double distance);
 	void advancedTurn(double L, double R, double yaw);
 	void advancedMove(double L, double R, double distance);
+	void raiseAntennae();
+	void lowerAntennae();
 
 	//Tasks that need to be performed every time the loop is run, such as managing the states
 	void runCurrentLoop();
@@ -58,11 +67,12 @@ public:
 	const double toteLowestHeight=.25;
 	const double toteHoldHeight=18;
 	const double toteLv2Height=11;
-	const double toteLv2HoldHeight=35;
+	const double toteLv2HoldHeight=37;
 	const double toteLv3Height=23;
 	const double toteMaxHeight=46;
 	const double averageRollerSpeed=.5;
 	const double averageConveyorSpeed=.5;
+	const double antennaeTime=7;
 
 protected:
 
@@ -70,6 +80,7 @@ protected:
 	const float deadband =.1;
 	elevatorState currentElevatorState;
 	driveState currentDriveState;
+	antennaeState currentAntennaeState;
 
 	//Target Angle/Distance in "goToLocation"
 	double targetAngle;
@@ -88,11 +99,13 @@ protected:
 
 	std::clock_t elevatorTimer;
 	std::clock_t driveTimer;
+	std::clock_t antennaeTimer;
 
 	//These should be run continuously in the execute loop
 	//Returns false until the task is finished
 	virtual void normalElevatorOperationLoop()=0;
 	virtual void normalDriveOperationLoop()=0;
+	virtual void normalAntennaeOperationLoop()=0;
 	bool moveElevatorToHeightLoop();
 	bool resetElevatorLoop();
 	bool autoLoadToteLoop();
@@ -104,6 +117,8 @@ protected:
 	bool fastGoToLocationLoop();
 	bool advancedTurnLoop();
 	bool advancedMoveLoop();
+	bool lowerAntennaeLoop();
+	bool raiseAntennaeLoop();
 };
 
 #endif

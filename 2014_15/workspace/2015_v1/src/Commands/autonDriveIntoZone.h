@@ -19,6 +19,8 @@ public:
 	void normalDriveOperationLoop();
 	void normalElevatorOperation();
 	void normalElevatorOperationLoop();
+	void normalAntennaeOperation();
+	void normalAntennaeOperationLoop();
 private:
 	int phase;
 };

@@ -3,8 +3,8 @@
 
 #include <string>
 #include "Commands/Command.h"
-#include "Subsystems/ExampleSubsystem.h"
 #include "Subsystems/Drive.h"
+#include "Subsystems/Antennae.h"
 #include "myUltrasonic.h"
 #include "Subsystems/myCompressor.h"
 #include "Subsystems/Elevator.h"
@@ -25,9 +25,9 @@ public:
 	CommandBase();
 	static void init();
 	// Create a single static instance of all of your subsystems
-	static ExampleSubsystem *examplesubsystem;
 	static OI *oi;
 	static Drive *drive;
+	static Antennae *antennae;
 	static myUltrasonic *sonic;
 	static SmartDashboard *dash;
 	static myCompressor *compress;

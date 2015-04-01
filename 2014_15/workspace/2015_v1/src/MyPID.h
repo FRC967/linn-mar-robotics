@@ -15,7 +15,7 @@
 
 class MyPID {
 public:
-	MyPID(double p, double i, double d, PIDSource *source);
+	MyPID(double p, double i, double d, PIDSource *source);	//p should be about 4-10 times higher than i. d should be really small.
 	virtual ~MyPID();
 	void calculate();
 	double get();

@@ -13,6 +13,7 @@ void autonDriveIntoZone::Initialize()
 	phase=1;
 	currentDriveState=DRIVE_NORMAL;
 	currentElevatorState=ELEVATOR_NORMAL;
+	currentAntennaeState=ANTENNAE_NORMAL;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -67,3 +68,11 @@ void autonDriveIntoZone::normalElevatorOperationLoop(){
 
 }
 
+void autonDriveIntoZone::normalAntennaeOperation(){
+	phase++;
+	currentAntennaeState=ANTENNAE_NORMAL;
+}
+
+void autonDriveIntoZone::normalAntennaeOperationLoop(){
+	antennae->stop();
+}

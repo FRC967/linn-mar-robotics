@@ -288,6 +288,185 @@ bool OI::xbox1_rTTapped() {
 	}
 	return false;
 }
+int OI::xbox1_POV(){
+	return xbox1.GetPOV();
+}
+bool OI::xbox1_POVN() {
+	if (xbox1.GetPOV()!=0) {
+		tappedArrayXbox1POV[0] = false;
+	}
+	return xbox1.GetPOV()==0;
+}
+bool OI::xbox1_POVNE() {
+	if (xbox1.GetPOV()!=45) {
+		tappedArrayXbox1POV[1] = false;
+	}
+	return xbox1.GetPOV()==45;
+}
+bool OI::xbox1_POVE() {
+	if (xbox1.GetPOV()!=90) {
+		tappedArrayXbox1POV[2] = false;
+	}
+	return xbox1.GetPOV()==90;
+}
+bool OI::xbox1_POVSE() {
+	if (xbox1.GetPOV()!=135) {
+		tappedArrayXbox1POV[3] = false;
+	}
+	return xbox1.GetPOV()==135;
+}
+bool OI::xbox1_POVS() {
+	if (xbox1.GetPOV()!=180) {
+		tappedArrayXbox1POV[4] = false;
+	}
+	return xbox1.GetPOV()==180;
+}
+bool OI::xbox1_POVSW() {
+	if (xbox1.GetPOV()!=225) {
+		tappedArrayXbox1POV[5] = false;
+	}
+	return xbox1.GetPOV()==225;
+}
+bool OI::xbox1_POVW() {
+	if (xbox1.GetPOV()!=270) {
+		tappedArrayXbox1POV[6] = false;
+	}
+	return xbox1.GetPOV()==270;
+}
+bool OI::xbox1_POVNW() {
+	if (xbox1.GetPOV()!=315) {
+		tappedArrayXbox1POV[7] = false;
+	}
+	return xbox1.GetPOV()==315;
+}
+bool OI::xbox1_POVNTapped() {
+	if (xbox1.GetPOV()!=0) {
+		tappedArrayXbox1POV[0] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox1POV[0]) {
+			tappedArrayXbox1POV[0] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox1_POVNETapped() {
+	if (xbox1.GetPOV()!=45) {
+		tappedArrayXbox1POV[1] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox1POV[1]) {
+			tappedArrayXbox1POV[1] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox1_POVETapped() {
+	if (xbox1.GetPOV()!=90) {
+		tappedArrayXbox1POV[2] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox1POV[2]) {
+			tappedArrayXbox1POV[2] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox1_POVSETapped() {
+	if (xbox1.GetPOV()!=135) {
+		tappedArrayXbox1POV[3] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox1POV[3]) {
+			tappedArrayXbox1POV[3] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox1_POVSTapped() {
+	if (xbox1.GetPOV()!=180) {
+		tappedArrayXbox1POV[4] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox1POV[4]) {
+			tappedArrayXbox1POV[4] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox1_POVSWTapped() {
+	if (xbox1.GetPOV()!=225) {
+		tappedArrayXbox1POV[5] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox1POV[5]) {
+			tappedArrayXbox1POV[5] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox1_POVWTapped() {
+	if (xbox1.GetPOV()!=270) {
+		tappedArrayXbox1POV[6] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox1POV[6]) {
+			tappedArrayXbox1POV[6] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox1_POVNWTapped() {
+	if (xbox1.GetPOV()!=315) {
+		tappedArrayXbox1POV[7] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox1POV[7]) {
+			tappedArrayXbox1POV[7] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
 
 //Controller 2-----------------------------------------------------------------------------------------------
 float OI::xbox2_x1() {
@@ -566,6 +745,185 @@ bool OI::xbox2_rTTapped() {
 	else {
 		if (!tappedArrayXbox2[11]) {
 			tappedArrayXbox2[11] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+int OI::xbox2_POV(){
+	return xbox2.GetPOV();
+}
+bool OI::xbox2_POVN() {
+	if (xbox2.GetPOV()!=0) {
+		tappedArrayXbox2POV[0] = false;
+	}
+	return xbox2.GetPOV()==0;
+}
+bool OI::xbox2_POVNE() {
+	if (xbox2.GetPOV()!=45) {
+		tappedArrayXbox2POV[1] = false;
+	}
+	return xbox2.GetPOV()==45;
+}
+bool OI::xbox2_POVE() {
+	if (xbox2.GetPOV()!=90) {
+		tappedArrayXbox2POV[2] = false;
+	}
+	return xbox2.GetPOV()==90;
+}
+bool OI::xbox2_POVSE() {
+	if (xbox2.GetPOV()!=135) {
+		tappedArrayXbox2POV[3] = false;
+	}
+	return xbox2.GetPOV()==135;
+}
+bool OI::xbox2_POVS() {
+	if (xbox2.GetPOV()!=180) {
+		tappedArrayXbox2POV[4] = false;
+	}
+	return xbox2.GetPOV()==180;
+}
+bool OI::xbox2_POVSW() {
+	if (xbox2.GetPOV()!=225) {
+		tappedArrayXbox2POV[5] = false;
+	}
+	return xbox2.GetPOV()==225;
+}
+bool OI::xbox2_POVW() {
+	if (xbox2.GetPOV()!=270) {
+		tappedArrayXbox2POV[6] = false;
+	}
+	return xbox2.GetPOV()==270;
+}
+bool OI::xbox2_POVNW() {
+	if (xbox2.GetPOV()!=315) {
+		tappedArrayXbox2POV[7] = false;
+	}
+	return xbox2.GetPOV()==315;
+}
+bool OI::xbox2_POVNTapped() {
+	if (xbox2.GetPOV()!=0) {
+		tappedArrayXbox2POV[0] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox2POV[0]) {
+			tappedArrayXbox2POV[0] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox2_POVNETapped() {
+	if (xbox2.GetPOV()!=45) {
+		tappedArrayXbox2POV[1] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox2POV[1]) {
+			tappedArrayXbox2POV[1] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox2_POVETapped() {
+	if (xbox2.GetPOV()!=90) {
+		tappedArrayXbox2POV[2] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox2POV[2]) {
+			tappedArrayXbox2POV[2] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox2_POVSETapped() {
+	if (xbox2.GetPOV()!=135) {
+		tappedArrayXbox2POV[3] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox2POV[3]) {
+			tappedArrayXbox2POV[3] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox2_POVSTapped() {
+	if (xbox2.GetPOV()!=180) {
+		tappedArrayXbox2POV[4] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox2POV[4]) {
+			tappedArrayXbox2POV[4] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox2_POVSWTapped() {
+	if (xbox2.GetPOV()!=225) {
+		tappedArrayXbox2POV[5] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox2POV[5]) {
+			tappedArrayXbox2POV[5] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox2_POVWTapped() {
+	if (xbox2.GetPOV()!=270) {
+		tappedArrayXbox2POV[6] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox2POV[6]) {
+			tappedArrayXbox2POV[6] = true;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+bool OI::xbox2_POVNWTapped() {
+	if (xbox2.GetPOV()!=315) {
+		tappedArrayXbox2POV[7] = false;
+		return false;
+	}
+	else {
+		if (!tappedArrayXbox2POV[7]) {
+			tappedArrayXbox2POV[7] = true;
 			return true;
 		}
 		else {

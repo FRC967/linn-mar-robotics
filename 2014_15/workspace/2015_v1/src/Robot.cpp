@@ -29,15 +29,19 @@ private:
 		lw = LiveWindow::GetInstance();
 	}
 	
-	void DisabledPeriodic()
-	{
-		Scheduler::GetInstance()->Run();
+	void DisabledInit(){
 		if (telCommand != NULL)
 			telCommand->Cancel();
 		if (autoCommand != NULL)
 			autoCommand->Cancel();
 		if (tCommand != NULL)
 			tCommand->Cancel();
+	}
+
+	void DisabledPeriodic()
+	{
+		Scheduler::GetInstance()->Run();
+		Wait(.01);
 	}
 
 	void AutonomousInit()
@@ -50,6 +54,7 @@ private:
 	void AutonomousPeriodic()
 	{
 		Scheduler::GetInstance()->Run();
+		Wait(.01);
 	}
 
 	void TeleopInit()
@@ -69,6 +74,7 @@ private:
 	void TeleopPeriodic()
 	{
 		Scheduler::GetInstance()->Run();
+		Wait(.01);
 	}
 
 	void TestInit()

@@ -1,9 +1,7 @@
 #include "CommandBase.h"
-#include "Subsystems/ExampleSubsystem.h"
 #include "Commands/Scheduler.h"
 
 // Initialize a single static instance of all of your subsystems to NULL
-ExampleSubsystem* CommandBase::examplesubsystem = NULL;
 OI* CommandBase::oi = NULL;
 Drive* CommandBase::drive = NULL;
 myUltrasonic* CommandBase::sonic = NULL;
@@ -16,6 +14,7 @@ LIDAR* CommandBase::lidar = NULL;
 Elevator* CommandBase::elevator = NULL;
 Preferences* CommandBase::prefs = NULL;
 DigitalInput* CommandBase::elevatorLimit = NULL;
+Antennae* CommandBase::antennae = NULL;
 
 CommandBase::CommandBase(char const *name) :
 		Command(name)
@@ -32,10 +31,10 @@ void CommandBase::init()
 {
 	// Create a single static instance of all of your subsystems. The following
 	// line should be repeated for each subsystem in the project.
-	examplesubsystem = new ExampleSubsystem();
 
 	oi = new OI();
-	drive = new Drive(0,1,0,0,7);
+	drive = new Drive(0,1,0,7,0);
+	antennae= new Antennae(7);
 	sonic = new myUltrasonic(0);
 	compress = new myCompressor(0);
 	nav6Port = new SerialPort(57600,SerialPort::kOnboard);
@@ -52,7 +51,7 @@ void CommandBase::init()
 	driveEncoder->Reset();
 	elevatorEncoder->Reset();
 	lidar = new LIDAR();
-	elevator = new Elevator(5, 3, 4, 0, 1, 6, 3, 4, 0, 2, 5);
+	elevator = new Elevator(2, 3, 4, 0, 1, 6, 3, 4, 0, 5, 2);
 	SmartDashboard::init();
 	prefs = Preferences::GetInstance();
 }

@@ -7,7 +7,10 @@
 #include "auton2T.h"
 #include "auton3T.h"
 #include "autonDriveIntoZone.h"
+#include "autonNothing.h"
 #include "../CommandBase.h"
+#include "autonTest.h"
+#include "autonStep.h"
 
 class autonomousCommand: public CommandGroup
 {

@@ -1,5 +1,5 @@
 #include "auton1T.h"
-auton1T::auton1T(): phase(1), turnRight(true)
+auton1T::auton1T(): phase(1), turnRight(false)
 {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(chassis);
@@ -9,10 +9,12 @@ auton1T::auton1T(): phase(1), turnRight(true)
 void auton1T::Initialize()
 {
 	drive->highGear();
+	elevator->highGearElevator();
 	phase=1;
 	currentElevatorState=ELEVATOR_NORMAL;
 	currentDriveState=DRIVE_NORMAL;
-	turnRight=true;
+	currentAntennaeState=ANTENNAE_NORMAL;
+	turnRight=false;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -24,7 +26,7 @@ void auton1T::Execute()
 // Make this return true when this Command no longer needs to run execute()
 bool auton1T::IsFinished()
 {
-	return phase==6;
+	return phase>=9;
 }
 
 // Called once after isFinished returns true
@@ -55,10 +57,24 @@ void auton1T::normalElevatorOperation(){
 void auton1T::normalElevatorOperationLoop(){
 	switch (phase){
 	case 1:
-		autoLoadTote();
+		elevator->closeMag();
+		elevator->openArms();
+		phase++;
 		break;
-	case 4:
-		autoEjectTote();
+	case 2:
+		moveElevatorToHeight(18);
+		break;
+	case 3:
+		moveElevatorToHeight(26);
+		break;
+	case 5:
+		autoGrabTote();
+		break;
+//	case 9:
+//		autoEjectTote();
+//		break;
+	default :
+		elevator->setElevator(0);
 		break;
 	}
 }
@@ -70,25 +86,36 @@ void auton1T::normalDriveOperation(){
 }
 void auton1T::normalDriveOperationLoop(){
 	switch (phase){
-	case 1:
-		drive->stopdrive();
+	case 3:
+		goToLocation(0,24);
 		break;
-	case 2:
+	case 6:
 		if (turnRight){
-			goToLocation(90,100);
+			goToLocation(90,0);
 		}
 		else {
-			goToLocation(-90,100);
+			goToLocation(-90,0);
 		}
 		break;
-	case 3:
+	case 7:
+		goToLocation(0,105);
+		break;
+	case 8:
 		goToLocation(70,0);
 		break;
-	case 4:
+//	case 10:
+//		goToLocation(0,-12);
+//		break;
+	default:
 		drive->stopdrive();
-		break;
-	case 5:
-		goToLocation(0,-12);
-		break;
 	}
+}
+
+void auton1T::normalAntennaeOperation(){
+	phase++;
+	currentAntennaeState=ANTENNAE_NORMAL;
+}
+
+void auton1T::normalAntennaeOperationLoop(){
+	antennae->stop();
 }
