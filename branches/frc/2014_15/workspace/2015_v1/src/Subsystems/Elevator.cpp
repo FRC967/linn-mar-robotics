@@ -48,7 +48,8 @@ void Elevator::shiftElevatorGear() {
 	}
 }
 bool Elevator::isElevatorHighGear() {
-	if (winchShifter.Get() == DoubleSolenoid::Value::kForward) {
+	//if (winchShifter.Get() == DoubleSolenoid::Value::kForward) {
+	if (winchShifter.Get() == DoubleSolenoid::Value::kReverse) {
 		return true;
 	} else {
 		return false;

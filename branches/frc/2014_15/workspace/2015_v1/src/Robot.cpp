@@ -74,7 +74,7 @@ private:
 	void TeleopPeriodic()
 	{
 		Scheduler::GetInstance()->Run();
-		Wait(.01);
+		Wait(.008);
 	}
 
 	void TestInit()

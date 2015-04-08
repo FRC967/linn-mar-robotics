@@ -50,6 +50,7 @@ void CommandBase::init()
 
 	driveEncoder->Reset();
 	elevatorEncoder->Reset();
+
 	lidar = new LIDAR();
 	elevator = new Elevator(2, 3, 4, 0, 1, 6, 3, 4, 0, 5, 2);
 	SmartDashboard::init();

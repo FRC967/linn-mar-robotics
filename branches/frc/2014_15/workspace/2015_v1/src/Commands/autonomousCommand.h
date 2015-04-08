@@ -11,6 +11,9 @@
 #include "../CommandBase.h"
 #include "autonTest.h"
 #include "autonStep.h"
+#include "autonBin.h"
+
+#include "telMessages.h"
 
 class autonomousCommand: public CommandGroup
 {
@@ -19,3 +22,12 @@ public:
 };
 
 #endif
+
+/*
+ *
+#include <Commands/telControl.h>
+#include "Commands/pollLIDAR.h"
+#include "telCompress.h"
+#include "telMessages.h"
+ *
+ */

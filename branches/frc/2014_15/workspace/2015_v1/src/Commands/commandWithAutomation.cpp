@@ -71,6 +71,18 @@ void commandWithAutomation::runCurrentLoop(){
 			currentElevatorState = ELEVATOR_NORMAL;
 		}
 	}
+	else if (currentElevatorState == AUTO_GET_TOTE_FD) {
+		if (autoGetToteFDLoop()) {
+			normalElevatorOperation();
+			currentElevatorState = ELEVATOR_NORMAL;
+		}
+	}
+	else if (currentElevatorState == MOVE_HIGH_ELEVATOR_TO_HEIGHT) {
+		if (moveHighElevatorToHeightLoop()) {
+			normalElevatorOperation();
+			currentElevatorState = ELEVATOR_NORMAL;
+		}
+	}
 
 
 
@@ -304,6 +316,117 @@ void commandWithAutomation::lowerAntennae(){
 	currentAntennaeState=LOWER_ANTENNAE;
 }
 
+void commandWithAutomation::moveHighElevatorToHeight(float heightIN){
+	targetElevatorHeight=heightIN;
+	if(elevatorEncoder->GetDistance() > heightIN+.25){
+		elevator-> setElevator(-1);
+	}
+	else if(elevatorEncoder->GetDistance() < heightIN-.25){
+		elevator-> setElevator(1);
+	}
+	else{
+		elevator-> setElevator(0);
+	}
+	currentElevatorState=MOVE_HIGH_ELEVATOR_TO_HEIGHT;
+}
+
+void commandWithAutomation::autoGetToteFD(){
+	currentElevatorState=AUTO_GET_TOTE_FD;
+	elevatorStep=1;
+}
+
+bool commandWithAutomation::autoGetToteFDLoop(){
+	switch (elevatorStep){
+	case 1:
+		elevator -> closeArms();
+		elevator -> closeMag();
+		elevatorTimer=std::clock();
+		elevatorStep = 2;
+		break;
+	case 2:
+		elevator -> setRollers(-1);
+		if((3.0*(double)(std::clock() - elevatorTimer) / (double) CLOCKS_PER_SEC)>.3){
+			elevator -> setRollers(0);
+			elevatorStep = 3;
+		}
+		break;
+	case 3:
+		if (elevator->isMagOpen()){
+			elevator->closeMag();
+		}
+		if(!elevator->isArmsOpen()){
+			elevator->openArms();
+		}
+		elevator->highGearElevator();
+		targetElevatorHeight=toteLowestHeight;
+		if(elevator->isElevatorHighGear()){
+			if(moveHighElevatorToHeightLoop()){
+				elevatorStep=4;
+			}
+		}
+		else{
+			if(moveElevatorToHeightLoop()){
+				elevatorStep=4;
+			}
+		}
+		break;
+	case 4:
+		if (elevator->isArmsOpen()){
+			elevator->openArms();
+		}
+		elevator->lowGearElevator();
+		elevatorStep=5;
+		break;
+	case 5:
+		if(elevator->isElevatorHighGear()){
+			targetElevatorHeight=toteHoldHeight;
+			if(moveHighElevatorToHeightLoop()){
+				return true;
+			}
+		}
+		else{
+			targetElevatorHeight=toteHoldHeight;
+			if(moveElevatorToHeightLoop()){
+				return true;
+			}
+		}
+		break;
+	}
+	return false;
+}
+
+bool commandWithAutomation::moveHighElevatorToHeightLoop(){
+
+	if((elevatorEncoder->GetDistance() < .60 || elevatorLimit->Get()==0) && targetElevatorHeight<.60){
+		elevator->setElevator(0);
+		return true;
+	}
+	if(elevatorEncoder->GetDistance() > targetElevatorHeight+.3 ){
+		if (abs(elevatorEncoder->GetDistance() - targetElevatorHeight)>5){
+			elevator->setElevator(-1);
+		}
+		else{
+			elevator->setElevator(-.5);
+		}
+		return false;
+	}
+	else if(elevatorEncoder->GetDistance() < targetElevatorHeight-.3 ){
+		if (abs(elevatorEncoder->GetDistance() - targetElevatorHeight)>5){
+			elevator->setElevator(1);
+		}
+		else{
+			elevator->setElevator(.5);
+		}
+		return false;
+	}
+	else{
+		elevator-> setElevator(0);
+		return true;
+	}
+	return false;
+}
+
+
 bool commandWithAutomation::moveElevatorToHeightLoop(){
 
 	if((elevatorEncoder->GetDistance() < .30 || elevatorLimit->Get()==0) && targetElevatorHeight<.30){
@@ -397,8 +520,9 @@ bool commandWithAutomation::autoLv2LoadToteLoop(){
 		if (elevator->isArmsOpen()){
 			elevator->closeArms();
 		}
+		elevator->highGearElevator();
 		targetElevatorHeight=toteLowestHeight;
-		if(moveElevatorToHeightLoop()){
+		if(moveHighElevatorToHeightLoop()){
 			elevatorStep=3;
 		}
 		break;
@@ -406,6 +530,7 @@ bool commandWithAutomation::autoLv2LoadToteLoop(){
 		if (!elevator->isArmsOpen()){
 			elevator->openArms();
 		}
+		elevator->lowGearElevator();
 		targetElevatorHeight=toteLv2HoldHeight;
 		if(moveElevatorToHeightLoop()){
 			return true;
@@ -445,7 +570,7 @@ bool commandWithAutomation::autoGetToteLoop(){
 	switch (elevatorStep){
 	case 1:
 		elevator -> closeArms();
-		elevator->closeMag();
+		elevator -> closeMag();
 		elevatorTimer=std::clock();
 		elevatorStep = 2;
 		break;
@@ -464,8 +589,15 @@ bool commandWithAutomation::autoGetToteLoop(){
 			elevator->openArms();
 		}
 		targetElevatorHeight=toteLowestHeight;
-		if(moveElevatorToHeightLoop()){
-			elevatorStep=4;
+		if(elevator->isElevatorHighGear()){
+			if(moveHighElevatorToHeightLoop()){
+				elevatorStep=4;
+			}
+		}
+		else{
+			if(moveElevatorToHeightLoop()){
+				elevatorStep=4;
+			}
 		}
 		break;
 	case 4:
@@ -475,9 +607,17 @@ bool commandWithAutomation::autoGetToteLoop(){
 		elevatorStep=5;
 		break;
 	case 5:
-		targetElevatorHeight=toteHoldHeight;
-		if(moveElevatorToHeightLoop()){
-			return true;
+		if(elevator->isElevatorHighGear()){
+			targetElevatorHeight=toteHoldHeight;
+			if(moveHighElevatorToHeightLoop()){
+				return true;
+			}
+		}
+		else{
+			targetElevatorHeight=toteHoldHeight;
+			if(moveElevatorToHeightLoop()){
+				return true;
+			}
 		}
 		break;
 	}
@@ -615,10 +755,10 @@ bool commandWithAutomation::fastGoToLocationLoop(){
 
 bool commandWithAutomation::advancedMoveLoop(){
 	if (targetDistance>0){
-		return ((targetDistance-(driveEncoder->GetDistance()-initialDistance))<5);
+		return ((driveEncoder->GetDistance()-initialDistance)>(targetDistance-5));
 	}
 	else {
-		return ((targetDistance-(driveEncoder->GetDistance()-initialDistance))>-5);
+		return ((driveEncoder->GetDistance()-initialDistance)<(targetDistance+5));
 	}
 }
 
