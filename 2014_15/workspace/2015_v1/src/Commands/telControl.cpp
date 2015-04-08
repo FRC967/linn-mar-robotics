@@ -28,8 +28,8 @@ telControl::telControl()
 // Called just before this Command runs the first time
 void telControl::Initialize() {
 //	elevator->closeMag();
-	elevator->openMag();
-	elevator->openArms();
+//	elevator->openMag();
+//	elevator->openArms();
 	drive->lowGear();
 }
 
@@ -40,6 +40,14 @@ void telControl::Execute() {
 		normalDriveOperation();
 		normalElevatorOperation();
 	}
+	if (oi->board_4Tapped()){
+		normalDriveOperation();
+		normalElevatorOperation();
+		elevator->shiftElevatorGear();
+	}
+//	if (oi->board_4Tapped()){//******************************************************
+//		elevator->shiftElevatorGear();
+//	}
 	if (oi->xbox1_start() || oi->board_5()){
 		elevatorOverride=true;
 	}
@@ -97,8 +105,6 @@ void telControl::Execute() {
 	//!    not
 	//==   equals
 	//!=   Not Equals
-
-	// :)  Happy
 
 }
 
@@ -218,7 +224,7 @@ void telControl::normalElevatorOperationLoop(){
 		autoLv2LoadTote();
 	}
 	if (oi->board_3Tapped()){
-		moveElevatorToHeight(toteLv3Height);
+		autoGetToteFD();
 	}
 	if (oi->board_4Tapped()){
 		elevator->shiftElevatorGear();

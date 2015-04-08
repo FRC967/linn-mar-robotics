@@ -20,7 +20,10 @@ public:
 		AUTO_EJECT_TOTE,
 		AUTO_GET_TOTE,
 		AUTO_GRAB_TOTE,
-		AUTO_LV2_LOAD_TOTE
+		AUTO_LV2_LOAD_TOTE,
+
+		AUTO_GET_TOTE_FD,
+		MOVE_HIGH_ELEVATOR_TO_HEIGHT
 	};
 
 	enum driveState{
@@ -61,18 +64,22 @@ public:
 	void raiseAntennae();
 	void lowerAntennae();
 
+	void autoGetToteFD();
+	void moveHighElevatorToHeight(float heightIN);
+
 	//Tasks that need to be performed every time the loop is run, such as managing the states
 	void runCurrentLoop();
 
-	const double toteLowestHeight=.25;
-	const double toteHoldHeight=18;
+	const double toteLowestHeight=0.3;
+
+	const double toteHoldHeight=20;
 	const double toteLv2Height=11;
 	const double toteLv2HoldHeight=37;
 	const double toteLv3Height=23;
 	const double toteMaxHeight=46;
 	const double averageRollerSpeed=.5;
 	const double averageConveyorSpeed=.5;
-	const double antennaeTime=7;
+	const double antennaeTime=1.3;
 
 protected:
 
@@ -119,6 +126,9 @@ protected:
 	bool advancedMoveLoop();
 	bool lowerAntennaeLoop();
 	bool raiseAntennaeLoop();
+
+	bool autoGetToteFDLoop();
+	bool moveHighElevatorToHeightLoop();
 };
 
 #endif

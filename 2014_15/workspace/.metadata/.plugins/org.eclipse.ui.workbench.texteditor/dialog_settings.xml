@@ -13,16 +13,16 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="drivePID" key="selection"/>
+		<item value="" key="selection"/>
 		<list key="findhistory">
+			<item value="encoder"/>
+			<item value="5"/>
+			<item value="18"/>
+			<item value="17"/>
+			<item value="22"/>
+			<item value="21"/>
+			<item value="PID"/>
 			<item value="testPID"/>
-			<item value="PIDPlacebo"/>
-			<item value="dash"/>
-			<item value="das"/>
-			<item value="Autonomous Value"/>
-			<item value="-&gt;PutNumber (&quot;Autonomous Value&quot;,prefs-&gt;GetInt(&quot;Autonomous&quot;,1));"/>
-			<item value="tappedArrayboard"/>
-			<item value="xbox2"/>
 		</list>
 		<list key="replacehistory">
 			<item value="drivePID"/>

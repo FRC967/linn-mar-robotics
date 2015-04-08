@@ -20,6 +20,10 @@ autonomousCommand::autonomousCommand()
 		AddSequential(new auton3T());
 		break;
 	case 10:
+		CommandBase::dash->PutString ("Autonomous", "Auton Bin");
+		AddSequential(new autonBin());
+		break;
+	case 20:
 		CommandBase::dash->PutString ("Autonomous", "Auton Step");
 		AddSequential(new autonStep());
 		break;

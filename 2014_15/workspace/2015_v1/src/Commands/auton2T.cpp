@@ -26,7 +26,7 @@ void auton2T::Execute()
 // Make this return true when this Command no longer needs to run execute()
 bool auton2T::IsFinished()
 {
-	return phase==17;
+	return phase>=17;
 }
 
 // Called once after isFinished returns true

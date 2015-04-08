@@ -20,7 +20,7 @@ private:
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
 public:
-
+			//2, 3, 4, 	0, 	1, 6, 	3, 4, 0, 5, 2
 	Elevator(uint32_t winchChannel, uint32_t armLChannel, uint32_t armRChannel,
 			uint8_t pneumaticsModuleNumber, uint32_t winchShiftForwardChannel, uint32_t winchShiftReverseChannel,
 			uint32_t armShiftForwardChannel, uint32_t armShiftReverseChannel,
