@@ -30,7 +30,7 @@ void telControl::Initialize() {
 //	elevator->closeMag();
 //	elevator->openMag();
 //	elevator->openArms();
-	drive->lowGear();
+//	drive->lowGear();
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -45,9 +45,12 @@ void telControl::Execute() {
 		normalElevatorOperation();
 		elevator->shiftElevatorGear();
 	}
-//	if (oi->board_4Tapped()){//******************************************************
-//		elevator->shiftElevatorGear();
-//	}
+	if (oi->board_3Tapped()){
+		normalDriveOperation();
+		normalElevatorOperation();
+		elevator->highGearElevator();
+		autoLoadBin();
+	}
 	if (oi->xbox1_start() || oi->board_5()){
 		elevatorOverride=true;
 	}
@@ -65,7 +68,6 @@ void telControl::Execute() {
 			elevator->shiftArms();
 		}
 		if (oi->board_lilGreenTapped()){
-			elevator->shiftArms();
 			elevator->shiftMag();
 		}
 		if (oi->xbox1_lT()){
@@ -134,15 +136,23 @@ void telControl::normalDriveOperation(){
 
 void telControl::normalDriveOperationLoop(){
 	drive->TeleDrive(oi->xbox1_y1(), oi->xbox1_x2());
-	if (oi->xbox1_rBTapped()) {
-		drive->shift();
-	}
 	if (oi->xbox1_lB()){
 		drive->stopdrive();
 	}
 }
 
 void telControl::normalElevatorOperationLoop(){
+	if (oi->board_3Tapped()){
+		autoLoadBin();
+	}
+	if (oi->xbox1_aTapped()){
+		elevator->openArms();
+		elevator->openBinArms();
+		elevator->openMag();
+	}
+	if (oi->xbox1_rBTapped()) {
+		elevator->shiftBinArms();
+	}
 	if (oi->xbox2_bTapped()){
 		elevator->shiftArms();
 	}
@@ -217,14 +227,14 @@ void telControl::normalElevatorOperationLoop(){
 	if (oi->xbox1_selectTapped()){
 		elevatorEncoder->Reset();
 	}
-	if (oi->board_1Tapped()){
+/*	if (oi->board_1Tapped()){
 		autoGetTote();
-	}
+	}*/
 	if (oi->board_2Tapped()){
 		autoLv2LoadTote();
 	}
-	if (oi->board_3Tapped()){
-		autoGetToteFD();
+	if (oi->board_1Tapped()){
+		autoLoadToteFD();
 	}
 	if (oi->board_4Tapped()){
 		elevator->shiftElevatorGear();

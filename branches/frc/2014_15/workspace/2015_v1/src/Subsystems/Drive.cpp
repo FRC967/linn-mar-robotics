@@ -1,12 +1,10 @@
 #include "Drive.h"
 #include "../RobotMap.h"
 
-Drive::Drive (uint32_t channeld1, uint32_t channeld2,
-		uint8_t shiftModuleNumber, uint32_t shiftForwardChannel, uint32_t shiftReverseChannel):
+Drive::Drive (uint32_t channeld1, uint32_t channeld2):
 	Subsystem("Drive"),
 	driveL(channeld1),
-	driveR(channeld2),
-	shifter(shiftModuleNumber, shiftForwardChannel, shiftReverseChannel)
+	driveR(channeld2)
 {
 	accel=2;
 	targetSpeedL = 0;
@@ -132,7 +130,7 @@ void Drive::TeleDrive(float Xbox_y, float Xbox_x){
 	Move(LeftSpeed,RightSpeed);
 }
 
-
+/*
 void Drive::shift(){
 	if(shifter.Get()==DoubleSolenoid::Value::kReverse){
 		shifter.Set(DoubleSolenoid::Value::kForward);
@@ -148,7 +146,7 @@ void Drive::highGear(){
 
 void Drive::lowGear(){
 	shifter.Set(DoubleSolenoid::Value::kForward);
-}
+}*/
 void Drive::setAccel(float newAccel){
 	accel=newAccel;
 }
@@ -157,6 +155,6 @@ float Drive::getAccel(){
 	return accel;
 }
 
-bool Drive::isHighGear(){
+/*bool Drive::isHighGear(){
 	return (shifter.Get()==DoubleSolenoid::Value::kReverse);
-}
+}*/

@@ -28,6 +28,10 @@ autonomousCommand::autonomousCommand()
 		AddSequential(new autonStep());
 		break;
 	case 100:
+		CommandBase::dash->PutString ("Autonomous", "Drive Into Zone");
+		AddSequential(new autonDriveIntoZone());
+		break;
+	case 1000:
 		CommandBase::dash->PutString ("Autonomous", "Test");
 		AddSequential(new autonTest());
 		break;

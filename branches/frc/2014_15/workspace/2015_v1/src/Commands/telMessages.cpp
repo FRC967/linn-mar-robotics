@@ -36,8 +36,14 @@ void telMessages::Execute()
 	dash ->PutNumber ("counter", counter);
 	dash ->PutString ("Test", "1");
 
+	//Testing the solenoids
+	dash ->PutBoolean("Bin Shifter Open?", elevator->isBinArmsOpen());
+	dash ->PutBoolean("Arm Shifter Open?", elevator->isArmsOpen());
+	dash ->PutBoolean("Mag Shifter Open?", elevator->isMagOpen());
+	dash ->PutBoolean("Winch High Gear?", elevator->isElevatorHighGear());
+
 	//Info Greyson might want
-	dash ->PutNumber ("Drive High Gear", drive->isHighGear());
+//	dash ->PutNumber ("Drive High Gear", drive->isHighGear());
 	dash ->PutNumber ("Elevator High Gear", elevator->isElevatorHighGear());
 	dash ->PutBoolean("elevator limit switch", elevatorLimit->Get());
 }

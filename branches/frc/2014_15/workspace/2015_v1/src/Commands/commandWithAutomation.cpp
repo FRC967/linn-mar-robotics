@@ -25,6 +25,7 @@ i(0)
 	// eg. Requires(chassis);
 }
 
+//Manages the states and runs the functions that should be run.
 void commandWithAutomation::runCurrentLoop(){
 	if (currentElevatorState == ELEVATOR_NORMAL) {
 		normalElevatorOperationLoop();
@@ -71,14 +72,26 @@ void commandWithAutomation::runCurrentLoop(){
 			currentElevatorState = ELEVATOR_NORMAL;
 		}
 	}
-	else if (currentElevatorState == AUTO_GET_TOTE_FD) {
-		if (autoGetToteFDLoop()) {
+	else if (currentElevatorState == AUTO_LOAD_TOTE_FD) {
+		if (autoLoadToteFDLoop()) {
 			normalElevatorOperation();
 			currentElevatorState = ELEVATOR_NORMAL;
 		}
 	}
 	else if (currentElevatorState == MOVE_HIGH_ELEVATOR_TO_HEIGHT) {
 		if (moveHighElevatorToHeightLoop()) {
+			normalElevatorOperation();
+			currentElevatorState = ELEVATOR_NORMAL;
+		}
+	}
+	else if (currentElevatorState == AUTO_LOAD_BIN) {
+		if (autoLoadBinLoop()) {
+			normalElevatorOperation();
+			currentElevatorState = ELEVATOR_NORMAL;
+		}
+	}
+	else if (currentElevatorState == AUTO_GET_TOTE_FD) {
+		if (autoGetToteFDLoop()) {
 			normalElevatorOperation();
 			currentElevatorState = ELEVATOR_NORMAL;
 		}
@@ -236,7 +249,24 @@ void commandWithAutomation::autoGrabTote(){
 	currentElevatorState=AUTO_GRAB_TOTE;
 	elevatorStep=1;
 }
+//Load a Tote once it is in the arms/rollers
+void commandWithAutomation::autoLoadBin(){
+	targetElevatorHeight=binLoadHeight;
+	i=0;
+	if(elevatorEncoder->GetDistance() > targetElevatorHeight+.25){
+		elevator-> setElevator(-1);
+	}
+	else if(elevatorEncoder->GetDistance() < targetElevatorHeight - .25){
+		elevator-> setElevator(1);
+	}
+	else{
+		elevator-> setElevator(0);
+	}
 
+	currentElevatorState=AUTO_LOAD_BIN;
+	elevatorStep=1;
+
+}
 //Go to a location specified by the angle and distance. Positive angle means right.
 void commandWithAutomation::goToLocation(double angle, double distance){
 	nav6->ZeroYaw();
@@ -267,6 +297,7 @@ void commandWithAutomation::goToLocation(double angle, double distance){
 	driveStep=1;
 	drive->setAccel(.1);
 }
+//A faster version of goToLocation, but it can be less precise
 void commandWithAutomation::fastGoToLocation(double angle, double distance){
 	nav6->ZeroYaw();
 	targetAngle=angle;
@@ -286,7 +317,7 @@ void commandWithAutomation::fastGoToLocation(double angle, double distance){
 	driveStep=1;
 	drive->setAccel(2);
 }
-
+//Run Left motor at power L and Right motor at R until the nav6 detects that there was a total change in yaw equal to the yaw parameter.
 void commandWithAutomation::advancedTurn(double L, double R, double yaw){
 	nav6->ZeroYaw();
 	targetAngle=yaw;
@@ -295,7 +326,7 @@ void commandWithAutomation::advancedTurn(double L, double R, double yaw){
 	currentDriveState=ADVANCED_TURN;
 	driveStep=1;
 }
-
+//Run Left motor at power L and Right motor at R until the encoder detects that there was a total change in distance equal to the distance parameter.
 void commandWithAutomation::advancedMove(double L, double R, double distance){
 	targetDistance=distance;
 	initialDistance=driveEncoder->GetDistance();
@@ -303,19 +334,19 @@ void commandWithAutomation::advancedMove(double L, double R, double distance){
 	currentDriveState=ADVANCED_MOVE;
 	driveStep=1;
 }
-
+//Raise the antennae until they reach the retracted position. Should never be used except maybe in autonomous
 void commandWithAutomation::raiseAntennae(){
 	antennae->set(-1);
 	currentAntennaeState=RAISE_ANTENNAE;
 	antennaeTimer=std::clock();
 }
-
+//Lower the antennae from the retracted position to the lowered position.
 void commandWithAutomation::lowerAntennae(){
 	antennaeTimer=std::clock();
 	antennae->set(1);
 	currentAntennaeState=LOWER_ANTENNAE;
 }
-
+//Move the elevator to a specified height
 void commandWithAutomation::moveHighElevatorToHeight(float heightIN){
 	targetElevatorHeight=heightIN;
 	if(elevatorEncoder->GetDistance() > heightIN+.25){
@@ -329,17 +360,27 @@ void commandWithAutomation::moveHighElevatorToHeight(float heightIN){
 	}
 	currentElevatorState=MOVE_HIGH_ELEVATOR_TO_HEIGHT;
 }
+//A version of autoLoadTote that goes down faster
+void commandWithAutomation::autoLoadToteFD(){
+	currentElevatorState=AUTO_LOAD_TOTE_FD;
+	elevatorStep=1;
+}
 
+//A version of autoGetTote that goes down faster
 void commandWithAutomation::autoGetToteFD(){
 	currentElevatorState=AUTO_GET_TOTE_FD;
 	elevatorStep=1;
 }
+
+//The functions below are run on a loop once their non-loop versions are called once.
+//Once the functions have finished, they will return true. Otherwise, they will return false.
 
 bool commandWithAutomation::autoGetToteFDLoop(){
 	switch (elevatorStep){
 	case 1:
 		elevator -> closeArms();
 		elevator -> closeMag();
+		elevator -> highGearElevator();
 		elevatorTimer=std::clock();
 		elevatorStep = 2;
 		break;
@@ -357,7 +398,6 @@ bool commandWithAutomation::autoGetToteFDLoop(){
 		if(!elevator->isArmsOpen()){
 			elevator->openArms();
 		}
-		elevator->highGearElevator();
 		targetElevatorHeight=toteLowestHeight;
 		if(elevator->isElevatorHighGear()){
 			if(moveHighElevatorToHeightLoop()){
@@ -371,24 +411,55 @@ bool commandWithAutomation::autoGetToteFDLoop(){
 		}
 		break;
 	case 4:
+		elevator->lowGearElevator();
+		if (elevator->isArmsOpen()){
+			elevator->openArms();
+		}
+		elevatorStep=5;
+		break;
+	case 5:
+		targetElevatorHeight=toteHoldHeight;
+		if(moveHighElevatorToHeightLoop()){
+			return true;
+		}
+		break;
+	}
+	return false;
+}
+
+bool commandWithAutomation::autoLoadToteFDLoop(){
+	switch (elevatorStep){
+	case 1:
+		if (elevator->isMagOpen()){
+			elevator->closeMag();
+		}
+		if(!elevator->isArmsOpen()){
+			elevator->openArms();
+		}
+		elevator->highGearElevator();
+		targetElevatorHeight=toteLowestHeight;
+		if(elevator->isElevatorHighGear()){
+			if(moveHighElevatorToHeightLoop()){
+				elevatorStep=2;
+			}
+		}
+		else{
+			if(moveElevatorToHeightLoop()){
+				elevatorStep=2;
+			}
+		}
+		break;
+	case 2:
 		if (elevator->isArmsOpen()){
 			elevator->openArms();
 		}
 		elevator->lowGearElevator();
-		elevatorStep=5;
+		elevatorStep=3;
 		break;
-	case 5:
-		if(elevator->isElevatorHighGear()){
-			targetElevatorHeight=toteHoldHeight;
-			if(moveHighElevatorToHeightLoop()){
-				return true;
-			}
-		}
-		else{
-			targetElevatorHeight=toteHoldHeight;
-			if(moveElevatorToHeightLoop()){
-				return true;
-			}
+	case 3:
+		targetElevatorHeight=toteHoldHeight;
+		if(moveHighElevatorToHeightLoop()){
+			return true;
 		}
 		break;
 	}
@@ -607,17 +678,9 @@ bool commandWithAutomation::autoGetToteLoop(){
 		elevatorStep=5;
 		break;
 	case 5:
-		if(elevator->isElevatorHighGear()){
-			targetElevatorHeight=toteHoldHeight;
-			if(moveHighElevatorToHeightLoop()){
-				return true;
-			}
-		}
-		else{
-			targetElevatorHeight=toteHoldHeight;
-			if(moveElevatorToHeightLoop()){
-				return true;
-			}
+		targetElevatorHeight=toteHoldHeight;
+		if(moveHighElevatorToHeightLoop()){
+			return true;
 		}
 		break;
 	}
@@ -639,6 +702,51 @@ bool commandWithAutomation::autoGrabToteLoop(){
 		break;
 	}
 	return false;
+}
+
+bool commandWithAutomation::autoLoadBinLoop(){
+	switch (elevatorStep){
+	case 1:
+		elevator->highGearElevator();
+		if (!elevator -> isMagOpen()){
+			elevator -> closeMag();
+			i++;
+		}
+		if (!elevator->isArmsOpen()){
+			elevator->openArms();
+			i++;
+		}
+		if (!elevator->isBinArmsOpen()){
+			elevator->openBinArms();
+			i++;
+		}
+		i++;
+		if (i<=1 || i>20){
+			elevatorStep=2;
+		}
+	//	elevator->highGearElevator();
+		break;
+	case 2:
+		targetElevatorHeight=binLoadHeight;
+		if(moveElevatorToHeightLoop()){
+	//		elevator->closeBinArms();
+	//		return true;
+			elevatorStep=3;
+		}
+		break;
+	case 3:
+		elevator->closeBinArms();
+		elevatorStep=4;
+		break;
+	case 4:
+		targetElevatorHeight=toteLv3Height;
+		if(moveElevatorToHeightLoop()){
+			elevator->lowGearElevator();
+			return true;
+		}
+	}
+	return false;
+
 }
 
 bool commandWithAutomation::goToLocationLoop(){

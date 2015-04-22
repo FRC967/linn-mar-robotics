@@ -21,9 +21,10 @@ public:
 		AUTO_GET_TOTE,
 		AUTO_GRAB_TOTE,
 		AUTO_LV2_LOAD_TOTE,
-
-		AUTO_GET_TOTE_FD,
-		MOVE_HIGH_ELEVATOR_TO_HEIGHT
+		AUTO_LOAD_TOTE_FD,
+		MOVE_HIGH_ELEVATOR_TO_HEIGHT,
+		AUTO_LOAD_BIN,
+		AUTO_GET_TOTE_FD
 	};
 
 	enum driveState{
@@ -47,6 +48,8 @@ public:
 	virtual void End()=0;
 	virtual void Interrupted()=0;
 
+	//Called once to tell the robot to run a certain function.
+	//Once called, they change the state of a robot part and tells runCurrentLoop to run the loop version of the function
 	virtual void normalElevatorOperation()=0;
 	virtual void normalDriveOperation()=0;
 	virtual void normalAntennaeOperation()=0;
@@ -63,7 +66,8 @@ public:
 	void advancedMove(double L, double R, double distance);
 	void raiseAntennae();
 	void lowerAntennae();
-
+	void autoLoadBin();
+	void autoLoadToteFD();
 	void autoGetToteFD();
 	void moveHighElevatorToHeight(float heightIN);
 
@@ -77,6 +81,7 @@ public:
 	const double toteLv2HoldHeight=37;
 	const double toteLv3Height=23;
 	const double toteMaxHeight=46;
+	const double binLoadHeight=46;
 	const double averageRollerSpeed=.5;
 	const double averageConveyorSpeed=.5;
 	const double antennaeTime=1.3;
@@ -126,9 +131,10 @@ protected:
 	bool advancedMoveLoop();
 	bool lowerAntennaeLoop();
 	bool raiseAntennaeLoop();
-
+	bool autoLoadToteFDLoop();
 	bool autoGetToteFDLoop();
 	bool moveHighElevatorToHeightLoop();
+	bool autoLoadBinLoop();
 };
 
 #endif

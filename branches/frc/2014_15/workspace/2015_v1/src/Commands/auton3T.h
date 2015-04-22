@@ -7,6 +7,7 @@
 
 class auton3T: public commandWithAutomation
 {
+	//Basically gonna be scrapped. This is all old stuff
 public:
 	auton3T();
 	void Initialize();

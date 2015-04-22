@@ -2,15 +2,17 @@
 #include "../RobotMap.h"
 
 Elevator::Elevator(uint32_t winchChannel, uint32_t armLChannel, uint32_t armRChannel,
-		uint8_t pneumaticsModuleNumber, uint32_t winchShiftForwardChannel, uint32_t winchShiftReverseChannel,
-		uint32_t armShiftForwardChannel, uint32_t armShiftReverseChannel,
-		uint32_t winchBrakeChannel,
-		uint32_t magShiftForwardChannel, uint32_t magShiftReverseChannel) :
-		Subsystem("elevator"), winchMotor(winchChannel), armMotorR(armRChannel), armMotorL(armLChannel),
+				uint8_t pneumaticsModuleNumber, uint32_t winchShiftForwardChannel, uint32_t winchShiftReverseChannel,
+				uint32_t armShiftForwardChannel, uint32_t armShiftReverseChannel,
+				uint32_t winchBrakeChannel,
+				uint32_t magShiftForwardChannel, uint32_t magShiftReverseChannel,
+				uint32_t binShifterForwardChannel, uint32_t binShifterReverseChannel) :
+		Subsystem("elevator"), winchMotor(winchChannel), armMotorL(armLChannel), armMotorR(armRChannel),
 				winchShifter(pneumaticsModuleNumber, winchShiftForwardChannel,winchShiftReverseChannel),
 				armShifter(pneumaticsModuleNumber,armShiftForwardChannel, armShiftReverseChannel),
 				winchBrake(winchBrakeChannel),
-				magShifter(pneumaticsModuleNumber, magShiftForwardChannel, magShiftReverseChannel){
+				magShifter(pneumaticsModuleNumber, magShiftForwardChannel, magShiftReverseChannel),
+				binShifter(pneumaticsModuleNumber, binShifterForwardChannel, binShifterReverseChannel){
 
 }
 
@@ -111,3 +113,24 @@ void Elevator::setLRollers(double power) {
 void Elevator::setRRollers(double power) {
 	armMotorR.Set(power);
 }
+void Elevator::shiftBinArms(){
+	if (binShifter.Get() == DoubleSolenoid::Value::kForward) {
+		binShifter.Set(DoubleSolenoid::Value::kReverse);
+	} else {
+		binShifter.Set(DoubleSolenoid::Value::kForward);
+	}
+}
+void Elevator::openBinArms(){
+	binShifter.Set(DoubleSolenoid::Value::kForward);
+}
+void Elevator::closeBinArms(){
+	binShifter.Set(DoubleSolenoid::Value::kReverse);
+}
+bool Elevator::isBinArmsOpen(){
+	if (binShifter.Get() == DoubleSolenoid::Value::kForward) {
+		return true;
+	} else {
+		return false;
+	}
+}
+

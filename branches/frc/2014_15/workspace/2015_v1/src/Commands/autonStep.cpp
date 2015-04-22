@@ -10,7 +10,7 @@ autonStep::autonStep()
 // Called just before this Command runs the first time
 void autonStep::Initialize()
 {
-	drive->highGear();
+	//drive->highGear();
 	elevator->highGearElevator();
 	phase=1;
 	currentElevatorState=ELEVATOR_NORMAL;

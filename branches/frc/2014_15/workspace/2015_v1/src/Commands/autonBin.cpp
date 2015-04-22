@@ -8,7 +8,7 @@ autonBin::autonBin(): phase(1), turnRight(true), i(0)
 // Called just before this Command runs the first time
 void autonBin::Initialize()
 {
-	drive->highGear();
+	//drive->highGear();
 	elevator->highGearElevator();
 	phase=1;
 	currentElevatorState=ELEVATOR_NORMAL;
