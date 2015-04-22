@@ -33,9 +33,9 @@ void CommandBase::init()
 	// line should be repeated for each subsystem in the project.
 
 	oi = new OI();
-	drive = new Drive(0,1,0,7,0);
+	drive = new Drive(0,1);
 	antennae= new Antennae(7);
-	sonic = new myUltrasonic(0);
+//	sonic = new myUltrasonic(0);
 	compress = new myCompressor(0);
 	nav6Port = new SerialPort(57600,SerialPort::kOnboard);
 	uint8_t update_rate_hz = 50;
@@ -45,14 +45,14 @@ void CommandBase::init()
 	elevatorLimit = new DigitalInput(5);
 
 	//TODO: Test these and find what the values should actually be
-	driveEncoder->SetDistancePerPulse(.02400);
+	driveEncoder->SetDistancePerPulse(.01200);
 	elevatorEncoder->SetDistancePerPulse(.01537);
 
 	driveEncoder->Reset();
 	elevatorEncoder->Reset();
 
 	lidar = new LIDAR();
-	elevator = new Elevator(2, 3, 4, 0, 1, 6, 3, 4, 0, 5, 2);
+	elevator = new Elevator(2, 3, 4, 0, 1, 6, 3, 4, 0, 5, 2, 7 ,0);
 	SmartDashboard::init();
 	prefs = Preferences::GetInstance();
 }

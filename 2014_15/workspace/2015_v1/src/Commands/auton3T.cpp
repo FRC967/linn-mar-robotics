@@ -8,7 +8,7 @@ auton3T::auton3T(): phase(1), turnRight(true), i(0)
 // Called just before this Command runs the first time
 void auton3T::Initialize()
 {
-	drive->highGear();
+	//drive->highGear();
 	elevator->highGearElevator();
 	phase=1;
 	currentElevatorState=ELEVATOR_NORMAL;

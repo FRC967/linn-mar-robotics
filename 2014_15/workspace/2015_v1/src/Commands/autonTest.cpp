@@ -54,6 +54,12 @@ void autonTest::normalDriveOperation(){
 void autonTest::normalDriveOperationLoop(){
 	switch (phase){
 	case 1:
+		goToLocation(0,105);
+		break;
+	case 2:
+		drive->stopdrive();
+		break;
+/*	case 1:
 		nav6->ZeroYaw();
 		advancedTurn(.55,-.45, 90);
 		break;
@@ -62,7 +68,7 @@ void autonTest::normalDriveOperationLoop(){
 		break;
 	case 3:
 		drive->stopdrive();
-		break;
+		break;*/
 	}
 }
 

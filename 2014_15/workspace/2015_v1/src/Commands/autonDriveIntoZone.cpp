@@ -9,7 +9,7 @@ autonDriveIntoZone::autonDriveIntoZone(): phase(1)
 // Called just before this Command runs the first time
 void autonDriveIntoZone::Initialize()
 {
-	drive->highGear();
+//	drive->highGear();
 	phase=1;
 	currentDriveState=DRIVE_NORMAL;
 	currentElevatorState=ELEVATOR_NORMAL;
@@ -51,7 +51,7 @@ void autonDriveIntoZone::normalDriveOperation(){
 void autonDriveIntoZone::normalDriveOperationLoop(){
 	switch (phase){
 	case 1:
-		goToLocation(0,88);
+		goToLocation(0,108);
 		break;
 	case 2:
 		drive->stopdrive();

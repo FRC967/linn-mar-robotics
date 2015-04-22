@@ -9,7 +9,7 @@ class Drive: public Subsystem
 {
 private:
 	Talon driveL, driveR;
-	DoubleSolenoid shifter;
+//	DoubleSolenoid shifter;
 
 	const float deadband = .1;
 	const float maxout = 1;
@@ -21,8 +21,7 @@ private:
 
 
 public:
-	Drive (uint32_t channeld1, uint32_t channeld2,
-			uint8_t shiftModuleNumber, uint32_t shiftForwardChannel, uint32_t shiftReverseChannel);
+	Drive (uint32_t channeld1, uint32_t channeld2);
 	~Drive();
 	void test_motors();
 	void Move(float LeftSpeed, float RightSpeed);
@@ -32,10 +31,10 @@ public:
 	void InitDefaultCommand();
 	void setAccel(float newAccel);
 	float getAccel();
-	void shift();
+/*	void shift();
 	void highGear();
 	void lowGear();
-	bool isHighGear();
+	bool isHighGear();*/
 };
 
 #endif
